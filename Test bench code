@@ -1,0 +1,41 @@
+`timescale 1ns/1ps
+
+module traffic_fsm_tb;
+
+reg clk;
+reg reset;
+
+wire W_E,W_S,E_W,E_N,N_S,N_W,S_N,S_E;
+
+traffic_fsm uut(
+.clk(clk),
+.reset(reset),
+.W_E(W_E),
+.W_S(W_S),
+.E_W(E_W),
+.E_N(E_N),
+.N_S(N_S),
+.N_W(N_W),
+.S_N(S_N),
+.S_E(S_E)
+);
+
+/* clock generation */
+initial begin
+clk = 0;
+forever #5 clk = ~clk;
+end
+
+/* reset */
+initial begin
+reset = 1;
+#20;
+reset = 0;
+end
+
+/* simulation control */
+initial begin
+#2000;
+end
+
+endmodule
