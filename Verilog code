@@ -1,0 +1,60 @@
+`timescale 1ns/1ps
+module traffic_fsm(
+input wire clk,
+input wire reset,
+output reg W_E,
+output reg W_S,
+output reg E_W,
+output reg E_N,
+output reg N_S,
+output reg N_W,
+output reg S_N,
+output reg S_E
+);
+parameter STATE_TIME=30;
+reg[2:0] state,next_state;
+reg[5:0] timer;
+localparam
+CASE1=3'd0,
+CASE2=3'd1,
+CASE3=3'd2,
+CASE4=3'd3,
+CASE5=3'd4,
+CASE6=3'd5;
+always@(posedge clk or posedge reset)begin
+if(reset)begin
+state<=CASE1;
+timer<=0;
+end
+else begin
+if(timer==STATE_TIME-1)begin
+
+timer<=0;
+state<=next_state;
+end
+else timer<=timer+1;
+end
+end
+always@(*)begin
+case(state)
+CASE1:next_state=CASE2;
+CASE2:next_state=CASE3;
+CASE3:next_state=CASE4;
+CASE4:next_state=CASE5;
+CASE5:next_state=CASE6;
+CASE6:next_state=CASE1;
+default:next_state=CASE1;
+endcase
+end
+always@(*)begin
+W_E=0;W_S=0;E_W=0;E_N=0;N_S=0;N_W=0;S_N=0;S_E=0;
+case(state)
+CASE1:begin W_E=1;W_S=1;end
+CASE2:begin W_E=1;E_W=1;end
+CASE3:begin E_W=1;E_N=1;end
+CASE4:begin S_N=1;S_E=1;end
+CASE5:begin S_N=1;N_S=1;end
+CASE6:begin N_S=1;N_W=1;end
+endcase
+end
+endmodule
